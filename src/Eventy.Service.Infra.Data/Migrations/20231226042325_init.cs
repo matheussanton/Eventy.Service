@@ -21,14 +21,14 @@ namespace Eventy.Service.Infra.Data.Migrations
                     date = table.Column<DateTime>(type: "timestamp", nullable: false),
                     location = table.Column<string>(type: "varchar(200)", nullable: false),
                     googlemapsurl = table.Column<string>(type: "text", nullable: false),
-                    referenceid = table.Column<Guid>(type: "uuid", nullable: true),
                     status = table.Column<short>(type: "smallint", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp", nullable: false),
                     created_by = table.Column<Guid>(type: "uuid", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    deleted_by = table.Column<Guid>(type: "uuid", nullable: true)
+                    deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
+                    deleted = table.Column<bool>(type: "bool", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,17 +50,41 @@ namespace Eventy.Service.Infra.Data.Migrations
                     updated_at = table.Column<DateTime>(type: "timestamp", nullable: true),
                     updated_by = table.Column<Guid>(type: "uuid", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    deleted_by = table.Column<Guid>(type: "uuid", nullable: true)
+                    deleted_by = table.Column<Guid>(type: "uuid", nullable: true),
+                    deleted = table.Column<bool>(type: "bool", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_user", x => x.id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "user_event",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EventId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user_event", x => new { x.UserId, x.EventId });
+                });
+
+            migrationBuilder.InsertData(
+                table: "event",
+                columns: new[] { "id", "created_at", "created_by", "date", "deleted", "deleted_at", "deleted_by", "description", "googlemapsurl", "location", "name", "status", "updated_at", "updated_by" },
+                values: new object[] { new Guid("69414953-6494-481b-98e0-99d02d8cd412"), new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7768), new Guid("e100ec94-d169-41c7-9884-625b11b53e00"), new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7762), false, null, null, "Eventy is a event management system", "https://g.co/kgs/mxYNbz", "Eventy's office", "Eventy", (short)1, null, null });
+
             migrationBuilder.InsertData(
                 table: "user",
-                columns: new[] { "id", "created_at", "created_by", "deleted_at", "deleted_by", "email", "name", "password", "role", "status", "updated_at", "updated_by" },
-                values: new object[] { new Guid("9e04ff65-eb6d-4fba-a0ca-fdf9b2945785"), new DateTime(2023, 12, 25, 20, 52, 37, 856, DateTimeKind.Local).AddTicks(4752), new Guid("1cf41953-4798-4e53-af5b-84d866d732df"), null, null, "admin@eventy.com", "Administrator", "Pwd@123", (short)1, (short)1, null, null });
+                columns: new[] { "id", "created_at", "created_by", "deleted", "deleted_at", "deleted_by", "email", "name", "password", "role", "status", "updated_at", "updated_by" },
+                values: new object[] { new Guid("e100ec94-d169-41c7-9884-625b11b53e00"), new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(4031), new Guid("e100ec94-d169-41c7-9884-625b11b53e00"), false, null, null, "admin@eventy.com", "Administrator", "Pwd@123", (short)1, (short)1, null, null });
+
+            migrationBuilder.InsertData(
+                table: "user_event",
+                columns: new[] { "EventId", "UserId", "Status" },
+                values: new object[] { new Guid("69414953-6494-481b-98e0-99d02d8cd412"), new Guid("e100ec94-d169-41c7-9884-625b11b53e00"), 1 });
         }
 
         /// <inheritdoc />
@@ -71,6 +95,9 @@ namespace Eventy.Service.Infra.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "user");
+
+            migrationBuilder.DropTable(
+                name: "user_event");
         }
     }
 }

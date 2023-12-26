@@ -41,6 +41,10 @@ namespace Eventy.Service.Infra.Data.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("date");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bool")
+                        .HasColumnName("deleted");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("deleted_at");
@@ -69,10 +73,6 @@ namespace Eventy.Service.Infra.Data.Migrations
                         .HasColumnType("varchar(200)")
                         .HasColumnName("name");
 
-                    b.Property<Guid?>("ReferenceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("referenceid");
-
                     b.Property<short>("Status")
                         .HasColumnType("smallint")
                         .HasColumnName("status");
@@ -88,6 +88,21 @@ namespace Eventy.Service.Infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("event");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("69414953-6494-481b-98e0-99d02d8cd412"),
+                            CreatedAt = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7768),
+                            CreatedBy = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
+                            Date = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7762),
+                            Deleted = false,
+                            Description = "Eventy is a event management system",
+                            GoogleMapsUrl = "https://g.co/kgs/mxYNbz",
+                            Location = "Eventy's office",
+                            Name = "Eventy",
+                            Status = (short)1
+                        });
                 });
 
             modelBuilder.Entity("Eventy.Service.Domain.Entities.UserEntityDomain", b =>
@@ -104,6 +119,10 @@ namespace Eventy.Service.Infra.Data.Migrations
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bool")
+                        .HasColumnName("deleted");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp")
@@ -151,14 +170,39 @@ namespace Eventy.Service.Infra.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d5b25a5f-f6ac-46f6-bfcd-2df77f1f0d31"),
-                            CreatedAt = new DateTime(2023, 12, 25, 20, 57, 1, 451, DateTimeKind.Local).AddTicks(3980),
-                            CreatedBy = new Guid("a3797fd8-8221-42bf-9d85-a00345488623"),
+                            Id = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
+                            CreatedAt = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(4031),
+                            CreatedBy = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
+                            Deleted = false,
                             Email = "admin@eventy.com",
                             Name = "Administrator",
                             Password = "Pwd@123",
                             Role = (short)1,
                             Status = (short)1
+                        });
+                });
+
+            modelBuilder.Entity("Eventy.Service.Domain.Entities.UserEventEntityDomain", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "EventId");
+
+                    b.ToTable("user_event");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
+                            EventId = new Guid("69414953-6494-481b-98e0-99d02d8cd412"),
+                            Status = 1
                         });
                 });
 #pragma warning restore 612, 618

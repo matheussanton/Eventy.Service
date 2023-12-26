@@ -10,8 +10,7 @@ namespace Eventy.Service.Domain.Events.Commands
             string description,
             DateTime date,
             string location,
-            string googleMapsUrl,
-            Guid? referenceId = null
+            string googleMapsUrl
         )
         {
             Name = name;
@@ -19,7 +18,6 @@ namespace Eventy.Service.Domain.Events.Commands
             Date = date;
             Location = location;
             GoogleMapsUrl = googleMapsUrl;
-            ReferenceId = referenceId;   
         }
 
     
@@ -28,23 +26,10 @@ namespace Eventy.Service.Domain.Events.Commands
         public DateTime Date { get; set; }
         public string Location { get; set; }
         public string GoogleMapsUrl { get; set; }
-        public Guid? ReferenceId { get; set; }
 
         public Guid UserId { get; set; } = Guid.Parse(Constants.ADMIN_ID);
 
-
-        public EventEntityDomain Parse(){
-            return new EventEntityDomain(
-                Name,
-                Description,
-                Date,
-                Location,
-                GoogleMapsUrl,
-                UserId,
-                DateTime.UtcNow.AddHours(-3),
-                ReferenceId
-            );
-        }
+        public List<Guid> Participants { get; set; } = new List<Guid>();
 
     }
 }

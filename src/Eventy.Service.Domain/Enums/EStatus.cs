@@ -6,5 +6,6 @@ namespace Eventy.Service.Domain.Enums
         INACTIVE = 2,
         DELETED = 3,
         CANCELED = 4,
+        PENDING = 5,
     }
 }

@@ -37,10 +37,21 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(
+        public async Task<IActionResult> GetAsync(
             [FromRoute] Guid id)
         {
-            var request = new GetCouponRequest(id);
+            var request = new GetEventRequest(id);
+
+            var result = await _mediator.Send(request);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}/all")]
+        public async Task<IActionResult> GetAllAsync(
+            [FromRoute] Guid userId)
+        {
+            var request = new GetEventsRequest(userId);
 
             var result = await _mediator.Send(request);
 

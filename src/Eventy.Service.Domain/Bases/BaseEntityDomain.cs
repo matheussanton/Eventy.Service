@@ -15,7 +15,8 @@ namespace Eventy.Service.Domain.Bases
             DateTime? updatedAt = null,
             Guid? updatedBy = null,
             DateTime? deletedAt = null,
-            Guid? deletedBy = null
+            Guid? deletedBy = null,
+            bool deleted = false
         )
         {
             CreatedBy = createdBy;
@@ -26,6 +27,7 @@ namespace Eventy.Service.Domain.Bases
             UpdatedBy = updatedBy;
             DeletedAt = deletedAt;
             DeletedBy = deletedBy;
+            Deleted = deleted;
         }
 
         [Key]
@@ -60,5 +62,17 @@ namespace Eventy.Service.Domain.Bases
         [Column("deleted_by", TypeName = "uuid")]
         [JsonIgnore]
         public Guid? DeletedBy { get; private set; }
+
+        [Column("deleted", TypeName = "bool")]
+        [JsonIgnore]
+        public bool Deleted { get; private set; } = false;
+
+
+        public void SetDeleted(Guid? userId, DateTime? date)
+        {
+            DeletedBy = userId;
+            DeletedAt = date;
+            Deleted = true;
+        }
     }
 }

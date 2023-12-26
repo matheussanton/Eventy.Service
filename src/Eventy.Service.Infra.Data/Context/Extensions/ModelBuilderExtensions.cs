@@ -1,4 +1,6 @@
+using Eventy.Service.Domain;
 using Eventy.Service.Domain.Entities;
+using Eventy.Service.Domain.Enums;
 using Eventy.Service.Domain.User.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,21 +9,8 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
     public static class ModelBuilderExtensions
     {
         public static void ModelUser(this ModelBuilder modelBuilder){
-            modelBuilder.Entity<UserEntityDomain>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.Name).HasColumnName("name").HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Email).HasColumnName("email").HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Password).HasColumnName("password").HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Role).HasColumnName("role").IsRequired();
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at").IsRequired();
-                entity.Property(e => e.CreatedBy).HasColumnName("created_by").IsRequired();
-                entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
-                entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
-                entity.Property(e => e.DeletedAt).HasColumnName("deleted_at");
-                entity.Property(e => e.DeletedBy).HasColumnName("deleted_by");
-            });
+            modelBuilder.Entity<UserEntityDomain>()
+                        .HasKey(x => x.Id);
         }
 
         public static void SeedDefaultUser(this ModelBuilder modelBuilder)
@@ -32,8 +21,46 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
                     email: "admin@eventy.com",
                     password: "Pwd@123",
                     role: EUserRole.ADMINISTRATOR,
-                    createdAt: DateTime.Now,
-                    createdBy: Guid.NewGuid()
+                    createdAt: DateTime.UtcNow.AddHours(-3),
+                    createdBy: Guid.Parse(Constants.ADMIN_ID),
+                    id: Guid.Parse(Constants.ADMIN_ID)
+                )
+            );
+        }
+        
+        public static void ModelEvent(this ModelBuilder modelBuilder){
+            modelBuilder.Entity<EventEntityDomain>()
+                        .Ignore(x => x.UserEvents);
+        }
+
+        public static void SeedEvent(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EventEntityDomain>().HasData(
+                new EventEntityDomain(
+                    name: "Eventy",
+                    description: "Eventy is a event management system",
+                    date: DateTime.UtcNow.AddHours(-3),
+                    location: "Eventy's office",
+                    googleMapsUrl: "https://g.co/kgs/mxYNbz",
+                    createdBy: Guid.Parse(Constants.ADMIN_ID),
+                    createdAt: DateTime.UtcNow.AddHours(-3),
+                    id: Guid.Parse(Constants.DEFAULT_EVENT_ID)
+                )
+            );
+        }
+
+        public static void ModelUserEvent(this ModelBuilder modelBuilder){
+            modelBuilder.Entity<UserEventEntityDomain>()
+                        .HasKey(x => new {x.UserId, x.EventId});
+        }
+
+        public static void SeedUserEvent(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserEventEntityDomain>().HasData(
+                new UserEventEntityDomain(
+                    userId: Guid.Parse(Constants.ADMIN_ID),
+                    eventId: Guid.Parse(Constants.DEFAULT_EVENT_ID),
+                    status: EStatus.ACTIVE
                 )
             );
         }

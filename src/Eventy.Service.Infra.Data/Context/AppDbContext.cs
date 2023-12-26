@@ -22,12 +22,21 @@ namespace Eventy.Service.Infra.Data.Context
         }
         public DbSet<UserEntityDomain> Users { get; set; }
         public DbSet<EventEntityDomain> Events { get; set; }
+        public DbSet<UserEventEntityDomain> UserEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Seed default user
-            //modelBuilder.ModelUser();
+            modelBuilder.ModelUser();
             modelBuilder.SeedDefaultUser();
+
+            //Events
+            modelBuilder.ModelEvent();
+            modelBuilder.SeedEvent();
+
+            //User Events
+            modelBuilder.ModelUserEvent();
+            modelBuilder.SeedUserEvent();
         }
 
     }

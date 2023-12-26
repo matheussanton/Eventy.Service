@@ -17,7 +17,6 @@ namespace Eventy.Service.Domain.Entities
             string googleMapsUrl,
             Guid createdBy,
             DateTime createdAt,
-            Guid? referenceId = null,
             Guid? id = null,
             EStatus? status = null,
             Guid? updatedBy = null,
@@ -32,7 +31,6 @@ namespace Eventy.Service.Domain.Entities
             Date = date;
             Location = location;
             GoogleMapsUrl = googleMapsUrl;
-            ReferenceId = referenceId;
         }
 
 
@@ -51,7 +49,6 @@ namespace Eventy.Service.Domain.Entities
         [Column("googlemapsurl", TypeName = "text")]
         public string GoogleMapsUrl { get; private set; }
 
-        [Column("referenceid", TypeName = "uuid")]
-        public Guid? ReferenceId { get; private set; }
+        public List<UserEventEntityDomain> UserEvents { get; set; } = new List<UserEventEntityDomain>();
     }
 }

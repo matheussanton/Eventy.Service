@@ -4,8 +4,8 @@ using MediatR;
 
 namespace Eventy.Service.Domain.Events.Queries.Requests
 {
-    public class GetEventRequest : ByIdRequest, IRequest<EventEntityDomain?>
+    public class GetEventsRequest : ByIdRequest, IRequest<List<EventEntityDomain>?>
     {
-        public GetEventRequest(Guid id) : base(id){}
+        public GetEventsRequest(Guid id) : base(id){}
     }
 }

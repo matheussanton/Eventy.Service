@@ -9,8 +9,7 @@ namespace Eventy.Service.Domain.Events.Commands
                                   string description,
                                   DateTime date,
                                   string location,
-                                  string googleMapsUrl,
-                                  Guid? referenceId = null) : base(name, description, date, location, googleMapsUrl, referenceId)
+                                  string googleMapsUrl) : base(name, description, date, location, googleMapsUrl)
         {
             Id = id;
         }
@@ -19,7 +18,7 @@ namespace Eventy.Service.Domain.Events.Commands
 
         public EventEntityDomain Parse(EventEntityDomain record)
         {
-            return new EventEntityDomain(
+             var entity = new EventEntityDomain(
                 Name,
                 Description,
                 Date,
@@ -27,11 +26,15 @@ namespace Eventy.Service.Domain.Events.Commands
                 GoogleMapsUrl,
                 record.CreatedBy,
                 record.CreatedAt,
-                ReferenceId,
                 Id,
                 updatedBy: UserId,
                 updatedAt: DateTime.UtcNow.AddHours(-3)
             );
+
+            entity.UserEvents.Add(new UserEventEntityDomain(record.CreatedBy, entity.Id));
+            Participants.ForEach(x => entity.UserEvents.Add(new UserEventEntityDomain(x, entity.Id)));
+
+            return entity;
         }
     }
 }
