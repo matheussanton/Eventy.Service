@@ -18,6 +18,8 @@ namespace Eventy.Service.Host
 
             services.RegisterDataLayerDependencies(appSettings, Configuration);
             services.RegisterDomainDependencies();
+
+            services.AddLogging();
         }
 
         public void Configure(WebApplication app, IHostEnvironment env)

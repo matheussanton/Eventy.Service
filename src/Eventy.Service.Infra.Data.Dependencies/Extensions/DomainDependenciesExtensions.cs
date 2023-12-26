@@ -1,4 +1,6 @@
-using System.Reflection;
+using Eventy.Service.Domain.Events.Commands.Handlers;
+using Eventy.Service.Domain.Events.Queries;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventy.Service.Infra.Data.Dependencies.Extensions
@@ -7,11 +9,10 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
     {
         public static void RegisterDomainDependencies(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+            services.AddScoped<EventsHandler>();
+            services.AddScoped<EventsQueryHandler>();
 
-            // services.AddTransient<CouponsQueryHandler>();
-            // services.AddTransient<CouponsHandler>();
-
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
         }
     }
 }

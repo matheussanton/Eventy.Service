@@ -1,5 +1,6 @@
+using Eventy.Service.Domain.Events.Interfaces;
 using Eventy.Service.Infra.Data.Context;
-using Eventy.Service.Infra.Data.Dependencies;
+using Eventy.Service.Infra.Data.Repositories.Event;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,10 +20,10 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
 
         public static IServiceCollection RegisterPostgreSQL(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>( ServiceLifetime.Transient);
 
-            // //Repositories
-            // services.AddScoped<ICouponsRepository, CouponsRepository>();
+            //Repositories
+            services.AddScoped<IEventRepository, EventRepository>();
 
             return services;
         }

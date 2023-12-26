@@ -12,6 +12,7 @@ namespace Eventy.Service.Infra.Data.Context
         public AppDbContext(IConfiguration configuration)
         {
             Configuration = configuration;
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -20,6 +21,7 @@ namespace Eventy.Service.Infra.Data.Context
             optionsBuilder.UseNpgsql(Configuration.GetSection("Settings")["PostgreSQLConnectionString"]);
         }
         public DbSet<UserEntityDomain> Users { get; set; }
+        public DbSet<EventEntityDomain> Events { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

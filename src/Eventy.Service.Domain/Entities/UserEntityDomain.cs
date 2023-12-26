@@ -5,10 +5,10 @@ using Eventy.Service.Domain.User.Enums;
 
 namespace Eventy.Service.Domain.Entities
 {
-    [Table("user", Schema = "identity")]
+    [Table("user")]
     public class UserEntityDomain : BaseEntityDomain
     {
-        public UserEntityDomain() { }
+        public UserEntityDomain(Guid createdBy, DateTime createdAt) : base(createdBy, createdAt){ }
         
         public UserEntityDomain(
             string name,
@@ -23,7 +23,7 @@ namespace Eventy.Service.Domain.Entities
             Guid? updatedBy = null,
             DateTime? deletedAt = null,
             Guid? deletedBy = null
-        ) : base(id, status, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy)
+        ) : base(createdBy, createdAt, id, status, updatedAt, updatedBy, deletedAt, deletedBy)
         {
             Name = name;
             Email = email;

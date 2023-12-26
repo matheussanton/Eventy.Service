@@ -4,6 +4,7 @@ namespace Eventy.Service.Domain.Enums
     {
         ACTIVE = 1,
         INACTIVE = 2,
-        DELETED = 3
+        DELETED = 3,
+        CANCELED = 4,
     }
 }

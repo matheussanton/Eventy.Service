@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Eventy.Service.Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231224235307_InitUser")]
-    partial class InitUser
+    [Migration("20231225235238_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,74 @@ namespace Eventy.Service.Infra.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Eventy.Service.Domain.Entities.EventEntityDomain", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("date");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("varchar(5000)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("GoogleMapsUrl")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("googlemapsurl");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("location");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("ReferenceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("referenceid");
+
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("event");
+                });
+
             modelBuilder.Entity("Eventy.Service.Domain.Entities.UserEntityDomain", b =>
                 {
                     b.Property<Guid>("Id")
@@ -32,11 +100,11 @@ namespace Eventy.Service.Infra.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
-                    b.Property<Guid?>("CreatedBy")
+                    b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by");
 
@@ -81,14 +149,14 @@ namespace Eventy.Service.Infra.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("user", "identity");
+                    b.ToTable("user");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2afab1d9-5364-425e-8080-1e237590e5a0"),
-                            CreatedAt = new DateTime(2023, 12, 24, 20, 53, 7, 320, DateTimeKind.Local).AddTicks(7873),
-                            CreatedBy = new Guid("b807b9cf-3f3f-4e1b-a4cd-3ee704acc746"),
+                            Id = new Guid("9e04ff65-eb6d-4fba-a0ca-fdf9b2945785"),
+                            CreatedAt = new DateTime(2023, 12, 25, 20, 52, 37, 856, DateTimeKind.Local).AddTicks(4752),
+                            CreatedBy = new Guid("1cf41953-4798-4e53-af5b-84d866d732df"),
                             Email = "admin@eventy.com",
                             Name = "Administrator",
                             Password = "Pwd@123",
