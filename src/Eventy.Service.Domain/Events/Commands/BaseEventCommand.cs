@@ -27,7 +27,7 @@ namespace Eventy.Service.Domain.Events.Commands
         public string Location { get; set; }
         public string GoogleMapsUrl { get; set; }
 
-        public Guid UserId { get; set; } = Guid.Parse(Constants.ADMIN_ID);
+        public Guid UserId { get; set; } = Guid.Parse(Constants.DEMO_USER_ID);
 
         public List<Guid> Participants { get; set; } = new List<Guid>();
 

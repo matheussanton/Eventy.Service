@@ -4,7 +4,7 @@ using Eventy.Service.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Eventy.Service.Infra.Data.Repositories.Event
+namespace Eventy.Service.Infra.Data.Repositories
 {
     public class EventRepository : IEventRepository
     {

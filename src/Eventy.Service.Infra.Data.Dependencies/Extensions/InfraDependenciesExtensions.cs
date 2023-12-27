@@ -1,6 +1,8 @@
 using Eventy.Service.Domain.Events.Interfaces;
+using Eventy.Service.Domain.Settings;
+using Eventy.Service.Domain.User.Interfaces;
 using Eventy.Service.Infra.Data.Context;
-using Eventy.Service.Infra.Data.Repositories.Event;
+using Eventy.Service.Infra.Data.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,6 +26,7 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
 
             //Repositories
             services.AddScoped<IEventRepository, EventRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

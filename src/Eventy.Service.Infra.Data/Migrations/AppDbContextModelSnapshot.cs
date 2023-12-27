@@ -93,14 +93,14 @@ namespace Eventy.Service.Infra.Data.Migrations
                         new
                         {
                             Id = new Guid("69414953-6494-481b-98e0-99d02d8cd412"),
-                            CreatedAt = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7768),
+                            CreatedAt = new DateTime(2023, 12, 27, 17, 5, 30, 779, DateTimeKind.Utc).AddTicks(6577),
                             CreatedBy = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
-                            Date = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(7762),
+                            Date = new DateTime(2023, 12, 27, 17, 5, 30, 779, DateTimeKind.Utc).AddTicks(6573),
                             Deleted = false,
                             Description = "Eventy is a event management system",
                             GoogleMapsUrl = "https://g.co/kgs/mxYNbz",
                             Location = "Eventy's office",
-                            Name = "Eventy",
+                            Name = "Eventy Demo",
                             Status = (short)1
                         });
                 });
@@ -171,12 +171,12 @@ namespace Eventy.Service.Infra.Data.Migrations
                         new
                         {
                             Id = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
-                            CreatedAt = new DateTime(2023, 12, 26, 1, 23, 25, 439, DateTimeKind.Utc).AddTicks(4031),
+                            CreatedAt = new DateTime(2023, 12, 27, 17, 5, 30, 779, DateTimeKind.Utc).AddTicks(4200),
                             CreatedBy = new Guid("e100ec94-d169-41c7-9884-625b11b53e00"),
                             Deleted = false,
-                            Email = "admin@eventy.com",
-                            Name = "Administrator",
-                            Password = "Pwd@123",
+                            Email = "demo@eventy.com",
+                            Name = "Demonstration User",
+                            Password = "123",
                             Role = (short)1,
                             Status = (short)1
                         });

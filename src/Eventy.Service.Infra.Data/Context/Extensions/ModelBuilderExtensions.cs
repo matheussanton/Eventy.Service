@@ -17,13 +17,13 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
         {
             modelBuilder.Entity<UserEntityDomain>().HasData(
                 new UserEntityDomain(
-                    name: "Administrator",
-                    email: "admin@eventy.com",
-                    password: "Pwd@123",
+                    name: "Demonstration User",
+                    email: "demo@eventy.com",
+                    password: "123",
                     role: EUserRole.ADMINISTRATOR,
                     createdAt: DateTime.UtcNow.AddHours(-3),
-                    createdBy: Guid.Parse(Constants.ADMIN_ID),
-                    id: Guid.Parse(Constants.ADMIN_ID)
+                    createdBy: Guid.Parse(Constants.DEMO_USER_ID),
+                    id: Guid.Parse(Constants.DEMO_USER_ID)
                 )
             );
         }
@@ -37,14 +37,14 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
         {
             modelBuilder.Entity<EventEntityDomain>().HasData(
                 new EventEntityDomain(
-                    name: "Eventy",
+                    name: "Eventy Demo",
                     description: "Eventy is a event management system",
                     date: DateTime.UtcNow.AddHours(-3),
                     location: "Eventy's office",
                     googleMapsUrl: "https://g.co/kgs/mxYNbz",
-                    createdBy: Guid.Parse(Constants.ADMIN_ID),
+                    createdBy: Guid.Parse(Constants.DEMO_USER_ID),
                     createdAt: DateTime.UtcNow.AddHours(-3),
-                    id: Guid.Parse(Constants.DEFAULT_EVENT_ID)
+                    id: Guid.Parse(Constants.DEMO_EVENT_ID)
                 )
             );
         }
@@ -58,8 +58,8 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
         {
             modelBuilder.Entity<UserEventEntityDomain>().HasData(
                 new UserEventEntityDomain(
-                    userId: Guid.Parse(Constants.ADMIN_ID),
-                    eventId: Guid.Parse(Constants.DEFAULT_EVENT_ID),
+                    userId: Guid.Parse(Constants.DEMO_USER_ID),
+                    eventId: Guid.Parse(Constants.DEMO_EVENT_ID),
                     status: EStatus.ACTIVE
                 )
             );

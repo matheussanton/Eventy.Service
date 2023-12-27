@@ -1,3 +1,4 @@
+using Eventy.Service.Domain.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +10,16 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
         {
             var settings = configuration.GetSection("Settings");
             services.Configure<AppSettings>(settings);
-            return settings.Get<AppSettings>();
+
+            services.AddSingleton(new AppSettings
+            {
+                PostgreSQLConnectionString = configuration["Settings:PostgreSQLConnectionString"]!,
+                DatabaseName = configuration["Settings:DatabaseName"]!,
+                ApplicationName = configuration["Settings:ApplicationName"]!,
+                JwtSecretKey = configuration["Settings:JwtSecretKey"]!
+            });
+
+            return settings.Get<AppSettings>()!;
         }
     }
 }

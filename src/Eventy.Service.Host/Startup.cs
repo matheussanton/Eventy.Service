@@ -1,4 +1,5 @@
 using Eventy.Service.Infra.Data.Dependencies.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace Eventy.Service.Host
 {
@@ -12,7 +13,32 @@ namespace Eventy.Service.Host
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventy Service", Description = "Service for Eventy - Event manager.", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert a JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+            });
 
             var appSettings = services.RegisterAppSettings(Configuration);
 
