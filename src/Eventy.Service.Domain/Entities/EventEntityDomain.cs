@@ -12,7 +12,8 @@ namespace Eventy.Service.Domain.Entities
         public EventEntityDomain(
             string name,
             string description,
-            DateTime date,
+            DateTime startDate,
+            DateTime endDate,
             string location,
             string googleMapsUrl,
             Guid createdBy,
@@ -28,7 +29,8 @@ namespace Eventy.Service.Domain.Entities
         {
             Name = name;
             Description = description;
-            Date = date;
+            StartDate = startDate;
+            EndDate = endDate;
             Location = location;
             GoogleMapsUrl = googleMapsUrl;
         }
@@ -40,8 +42,10 @@ namespace Eventy.Service.Domain.Entities
         [Column("description", TypeName = "varchar(5000)")]
         public string Description { get; private set; }
 
-        [Column("date", TypeName = "timestamp")]
-        public DateTime Date { get; private set; }
+        [Column("start_date", TypeName = "timestamp")]
+        public DateTime StartDate { get; private set; }
+        [Column("end_date", TypeName = "timestamp")]
+        public DateTime EndDate { get; private set; }
 
         [Column("location", TypeName = "varchar(200)")]
         public string Location { get; private set; }

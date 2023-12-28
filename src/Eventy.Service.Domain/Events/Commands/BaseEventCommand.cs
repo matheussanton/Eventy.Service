@@ -1,4 +1,3 @@
-using Eventy.Service.Domain.Entities;
 using MediatR;
 
 namespace Eventy.Service.Domain.Events.Commands
@@ -8,14 +7,16 @@ namespace Eventy.Service.Domain.Events.Commands
         public BaseEventCommand(
             string name,
             string description,
-            DateTime date,
+            DateTime startDate,
+            DateTime endDate,
             string location,
             string googleMapsUrl
         )
         {
             Name = name;
             Description = description;
-            Date = date;
+            StartDate = startDate;
+            EndDate = endDate;
             Location = location;
             GoogleMapsUrl = googleMapsUrl;
         }
@@ -23,7 +24,8 @@ namespace Eventy.Service.Domain.Events.Commands
     
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public string Location { get; set; }
         public string GoogleMapsUrl { get; set; }
 

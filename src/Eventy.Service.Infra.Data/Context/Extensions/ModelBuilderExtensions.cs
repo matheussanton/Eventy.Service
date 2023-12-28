@@ -1,6 +1,7 @@
 using Eventy.Service.Domain;
 using Eventy.Service.Domain.Entities;
 using Eventy.Service.Domain.Enums;
+using Eventy.Service.Domain.Hash;
 using Eventy.Service.Domain.User.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
 {
     public static class ModelBuilderExtensions
     {
+        
         public static void ModelUser(this ModelBuilder modelBuilder){
             modelBuilder.Entity<UserEntityDomain>()
                         .HasKey(x => x.Id);
@@ -19,7 +21,7 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
                 new UserEntityDomain(
                     name: "Demonstration User",
                     email: "demo@eventy.com",
-                    password: "123",
+                    password: PasswordHasher.Hash("123"),
                     role: EUserRole.ADMINISTRATOR,
                     createdAt: DateTime.UtcNow.AddHours(-3),
                     createdBy: Guid.Parse(Constants.DEMO_USER_ID),
@@ -39,7 +41,8 @@ namespace Eventy.Service.Infra.Data.Context.Extensions
                 new EventEntityDomain(
                     name: "Eventy Demo",
                     description: "Eventy is a event management system",
-                    date: DateTime.UtcNow.AddHours(-3),
+                    startDate: DateTime.UtcNow.AddHours(-3),
+                    endDate: DateTime.UtcNow.AddHours(-3).AddMinutes(30),
                     location: "Eventy's office",
                     googleMapsUrl: "https://g.co/kgs/mxYNbz",
                     createdBy: Guid.Parse(Constants.DEMO_USER_ID),

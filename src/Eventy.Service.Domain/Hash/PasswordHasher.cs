@@ -3,7 +3,8 @@ using Eventy.Service.Domain.Hash.Interfaces;
 
 namespace Eventy.Service.Domain.Hash
 {
-    public class PasswordHasher : IPasswordHasher
+    // public class PasswordHasher : IPasswordHasher
+    public static class PasswordHasher
     {
         private const int SaltSize = 16; // 128 / 8 
         private const int KeySize = 32; // 256 / 8
@@ -11,7 +12,7 @@ namespace Eventy.Service.Domain.Hash
         private static readonly HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
         private static char Delimiter = '|';
 
-        public string Hash(string password)
+        public static string Hash(string password)
         {
             var salt = RandomNumberGenerator.GetBytes(SaltSize);
             var hash = Rfc2898DeriveBytes.Pbkdf2(password, salt, Iterations, _hashAlgorithmName, KeySize);
@@ -19,7 +20,7 @@ namespace Eventy.Service.Domain.Hash
             return string.Join(Delimiter, Convert.ToBase64String(salt),  Convert.ToBase64String(hash));
         }
 
-        public bool Verify(string password, string passwordHash)
+        public static bool Verify(string password, string passwordHash)
         {
             var elements = passwordHash.Split(Delimiter);
 

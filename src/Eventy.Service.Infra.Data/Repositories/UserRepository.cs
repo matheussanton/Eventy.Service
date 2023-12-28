@@ -49,7 +49,7 @@ namespace Eventy.Service.Infra.Data.Repositories
         {
             try
             {
-                return await _context.Users.FindAsync(email);
+                return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             }
             catch (Exception ex)
             {

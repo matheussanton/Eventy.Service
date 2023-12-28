@@ -11,7 +11,7 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
     {
         public static void RegisterDomainDependencies(this IServiceCollection services)
         {
-            services.AddSingleton<IPasswordHasher, PasswordHasher>();
+            // services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<EventsHandler>();
             services.AddScoped<EventsQueryHandler>();

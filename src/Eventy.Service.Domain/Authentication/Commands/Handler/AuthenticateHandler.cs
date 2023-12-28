@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Eventy.Service.Domain.Hash;
 using Eventy.Service.Domain.Hash.Interfaces;
 using Eventy.Service.Domain.Settings;
 using Eventy.Service.Domain.User.Interfaces;
@@ -13,17 +14,17 @@ namespace Eventy.Service.Domain.Authentication.Commands.Handler
     public class AuthenticateHandler : IRequestHandler<AuthenticateRequest, UserDTO?>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordHasher _passwordHasher;
+        // private readonly IPasswordHasher _passwordHasher;
         private readonly AppSettings _appSettings;
 
         public AuthenticateHandler(
             IUserRepository userRepository,
-            IPasswordHasher passwordHasher,
+            // IPasswordHasher passwordHasher,
             AppSettings appSettings
         )
         {
             _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
+            // _passwordHasher = passwordHasher;
             _appSettings = appSettings;
         }
 
@@ -34,7 +35,8 @@ namespace Eventy.Service.Domain.Authentication.Commands.Handler
 
             if (userRecord == null) return null;
 
-            if(_passwordHasher.Verify(request.Password, userRecord.Password))
+            // if(_passwordHasher.Verify(request.Password, userRecord.Password))
+            if(PasswordHasher.Verify(request.Password, userRecord.Password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                     var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSettings.JwtSecretKey));

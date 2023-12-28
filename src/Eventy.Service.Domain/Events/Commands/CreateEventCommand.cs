@@ -8,10 +8,11 @@ namespace Eventy.Service.Domain.Events.Commands
         public CreateEventCommand(
             string name,
             string description,
-            DateTime date,
+            DateTime startDate,
+            DateTime endDate,
             string location,
             string googleMapsUrl
-        ) : base(name, description, date, location, googleMapsUrl)
+        ) : base(name, description, startDate, endDate, location, googleMapsUrl)
         {
         }
 
@@ -19,7 +20,8 @@ namespace Eventy.Service.Domain.Events.Commands
             var entity = new EventEntityDomain(
                 Name,
                 Description,
-                Date,
+                StartDate,
+                EndDate,
                 Location,
                 GoogleMapsUrl,
                 UserId,
