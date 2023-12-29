@@ -1,4 +1,5 @@
 using Eventy.Service.Domain.Events.Commands;
+using Eventy.Service.Domain.Events.Models;
 using Eventy.Service.Domain.Events.Queries.Requests;
 using Eventy.Service.Domain.User.Extensions;
 using MediatR;
@@ -49,6 +50,7 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(SelectEvent), 200)]
         public async Task<IActionResult> GetAsync(
             [FromRoute] Guid id)
         {
@@ -60,6 +62,7 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         }
 
         [HttpGet("all")]
+        [ProducesResponseType(typeof(List<SelectEvent>), 200)]
         public async Task<IActionResult> GetAllAsync()
         {
             var userIdClaim = User.GetUserId();

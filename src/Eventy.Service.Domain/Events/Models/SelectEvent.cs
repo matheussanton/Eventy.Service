@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Eventy.Service.Domain.User.Models;
 
 namespace Eventy.Service.Domain.Events.Models
@@ -10,7 +11,9 @@ namespace Eventy.Service.Domain.Events.Models
         public DateTime EndDate { get; set; }
         public string Location { get; set; }
         public string GoogleMapsUrl { get; set; }
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; }
+        [JsonIgnore]
         public Guid CreatedBy { get; set; }
         public bool IsOwner { get; set; } = false;
 
