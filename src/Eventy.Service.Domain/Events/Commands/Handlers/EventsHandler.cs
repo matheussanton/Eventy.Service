@@ -36,7 +36,7 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
 
             var entity = request.Parse(record);
 
-            await _eventRepository.UpdateAsync(entity, record);
+            await _eventRepository.UpdateAsync(entity);
 
             return;
         }

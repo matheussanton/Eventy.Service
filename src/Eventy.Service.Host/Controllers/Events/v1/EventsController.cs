@@ -1,13 +1,15 @@
 using Eventy.Service.Domain.Events.Commands;
-using Eventy.Service.Domain.Events.Queries;
 using Eventy.Service.Domain.Events.Queries.Requests;
+using Eventy.Service.Domain.User.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventy.Service.Host.Controllers.Events.v1
 {
     [ApiController]
     [Route("api/[controller]/v1")]
+    [Authorize]
     public class EventsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,6 +25,11 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateEventCommand command)
         {
+            var userIdClaim = User.GetUserId();
+            if(userIdClaim == null) return Unauthorized();
+
+            command.UserId = Guid.Parse(userIdClaim);
+
             await _mediator.Send(command);
 
             return Ok();
@@ -31,6 +38,11 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdateEventCommand command)
         {
+            var userIdClaim = User.GetUserId();
+            if(userIdClaim == null) return Unauthorized();
+
+            command.UserId = Guid.Parse(userIdClaim);
+        
             await _mediator.Send(command);
 
             return Ok();
@@ -47,11 +59,13 @@ namespace Eventy.Service.Host.Controllers.Events.v1
             return Ok(result);
         }
 
-        [HttpGet("{userId}/all")]
-        public async Task<IActionResult> GetAllAsync(
-            [FromRoute] Guid userId)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            var request = new GetEventsRequest(userId);
+            var userIdClaim = User.GetUserId();
+            if(userIdClaim == null) return Unauthorized();
+
+            var request = new GetEventsRequest(Guid.Parse(userIdClaim));
 
             var result = await _mediator.Send(request);
 

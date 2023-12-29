@@ -44,13 +44,14 @@ namespace Eventy.Service.Domain.Authentication.Commands.Handler
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                            new Claim(ClaimTypes.Email, request.Email)
+                            new Claim(ClaimTypes.Email, request.Email),
+                            new Claim(Constants.USER_ID_CLAIM, userRecord.Id.ToString())
                         }),
                         Expires = DateTime.UtcNow.AddHours(3),
                         SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
                     };
                     var token = tokenHandler.CreateToken(tokenDescriptor);
-                    var tokenString = tokenHandler.WriteToken(token);
+                    var tokenString = String.Concat("Bearer ", tokenHandler.WriteToken(token));
                     
                 return new UserDTO
                 {

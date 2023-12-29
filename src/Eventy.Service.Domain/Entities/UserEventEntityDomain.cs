@@ -20,5 +20,6 @@ namespace Eventy.Service.Domain.Entities
         public Guid UserId { get; private set; }
         public Guid EventId { get; private set; }
         public EStatus Status { get; private set; }
+
     }
 }

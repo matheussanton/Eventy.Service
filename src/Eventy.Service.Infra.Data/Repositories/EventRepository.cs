@@ -1,5 +1,7 @@
 using Eventy.Service.Domain.Entities;
 using Eventy.Service.Domain.Events.Interfaces;
+using Eventy.Service.Domain.Events.Models;
+using Eventy.Service.Domain.User.Models;
 using Eventy.Service.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,16 +36,19 @@ namespace Eventy.Service.Infra.Data.Repositories
             }        
         }
 
-        public async Task UpdateAsync(EventEntityDomain eventEntity, EventEntityDomain record)
+        public async Task UpdateAsync(EventEntityDomain eventEntity)
         {
             try
             {
+                var record = await _context.Events.FirstOrDefaultAsync(x => x.Id == eventEntity.Id);
+                if(record == null) return;
+
                 _context.Entry(record).CurrentValues.SetValues(eventEntity);
 
-                var userEventsToRemove = record.UserEvents.Where(x => !eventEntity.UserEvents.Any(y => y.UserId == x.UserId));
+                var userEventsToRemove = record.UserEvents.Where(x => !eventEntity.UserEvents.Any(y => y.UserId == x.UserId) && x.UserId != eventEntity.CreatedBy);
                 _context.UserEvents.RemoveRange(userEventsToRemove);
 
-                var userEventsToAdd = eventEntity.UserEvents.Where(x => !record.UserEvents.Any(y => y.UserId == x.UserId));
+                var userEventsToAdd = eventEntity.UserEvents.Where(x => !record.UserEvents.Any(y => y.UserId == x.UserId) && x.UserId != eventEntity.CreatedBy);
                 await _context.UserEvents.AddRangeAsync(userEventsToAdd);
 
                 await _context.SaveChangesAsync();
@@ -54,24 +59,63 @@ namespace Eventy.Service.Infra.Data.Repositories
             }
         }
 
-        public async Task<EventEntityDomain?> GetByIdAsync(Guid id)
+        public async Task<SelectEvent?> GetByIdAsync(Guid id)
         {
             try
             {
-                var eventEntity = await _context.Events
-                            .FirstOrDefaultAsync(e => e.Id == id && !e.Deleted);
+                var evento = await _context.Events
+                                .Where(x => x.Id == id)
+                                .FirstOrDefaultAsync();
 
-                if (eventEntity == null)
+                if(evento == null)
                     return null;
 
-                var userEvents = await _context.UserEvents
-                            .Where(ue => ue.EventId == eventEntity.Id
-                                        && ue.UserId != eventEntity.CreatedBy)
-                            .ToListAsync();
+                var users = _context.Users
+                            .Join(
+                                _context.UserEvents,
+                                a => a.Id,
+                                b => b.UserId,
+                                (a, b) => new { User = a, UserEvent = b }
+                            )
+                            .Where(joinResult => joinResult.UserEvent.EventId == id)
+                            .Select(joinResult => new {joinResult.User, joinResult.UserEvent})
+                            .ToList();
 
-                eventEntity.UserEvents = userEvents;
+                var selectEvent = new SelectEvent
+                {
+                    Name = evento.Name,
+                    Description = evento.Description,
+                    StartDate = evento.StartDate,
+                    EndDate = evento.EndDate,
+                    Location = evento.Location,
+                    GoogleMapsUrl = evento.GoogleMapsUrl,
+                    IsOwner = evento.CreatedBy == evento.CreatedBy,
+                    Participants = new List<SelectUser>()
+                };
 
-                return eventEntity;
+                foreach (var item in users)
+                {
+                    if(item.UserEvent.UserId == evento.CreatedBy)
+                    {
+                        selectEvent.Owner = new SelectUser
+                        {
+                            Id = item.User.Id,
+                            Name = item.User.Name,
+                            Email = item.User.Email
+                        };
+
+                        continue;
+                    }
+                    
+                    selectEvent.Participants.Add(new SelectUser
+                    {
+                        Id = item.User.Id,
+                        Name = item.User.Name,
+                        Email = item.User.Email
+                    });
+                }
+
+                return selectEvent;
             }
             catch (Exception ex)
             {
@@ -80,21 +124,78 @@ namespace Eventy.Service.Infra.Data.Repositories
             }
         }
 
-        public async Task<List<EventEntityDomain>> GetAllAsync(Guid userId)
+        public async Task<List<SelectEvent>> GetAllAsync(Guid userId)
         {
             try
             {
-              return _context.Events
+                // TODOS EVENTOS QUE O USUARIO PARTICIPA
+                var eventIds = _context.UserEvents
+                                .Where(ue => ue.UserId == userId)
+                                .Select(ue => ue.EventId);
+
+                var events = _context.Events
                             .Join(
                                 _context.UserEvents,
                                 a => a.Id,
                                 b => b.EventId,
                                 (a, b) => new { Event = a, UserEvent = b }
                             )
-                            .Where(joinResult => joinResult.UserEvent.UserId == userId
-                                                && !joinResult.Event.Deleted)
-                            .Select(joinResult => joinResult.Event)
+                            .Join(
+                                _context.Users,
+                                a => a.UserEvent.UserId,
+                                b => b.Id,
+                                (a, b) => new { Event = a.Event, UserEvent = a.UserEvent, User = b }
+                            )
+                            .Where(joinResult => eventIds.Contains(joinResult.Event.Id))
+                            .Select(joinResult => new {joinResult.Event, joinResult.UserEvent, joinResult.User})
                             .ToList();
+                
+
+                
+                var dictionary  = new Dictionary<Guid, SelectEvent>();
+
+                foreach (var item in events)
+                {
+                    if(!dictionary.TryGetValue(item.Event.Id, out var selectEvent))
+                    {
+                        selectEvent = new SelectEvent
+                        {
+                            Name = item.Event.Name,
+                            Description = item.Event.Description,
+                            StartDate = item.Event.StartDate,
+                            EndDate = item.Event.EndDate,
+                            Location = item.Event.Location,
+                            GoogleMapsUrl = item.Event.GoogleMapsUrl,
+                            IsOwner = item.Event.CreatedBy == userId,
+                            Participants = new List<SelectUser>()
+                        };
+
+                        dictionary.Add(item.Event.Id, selectEvent);
+                    }
+
+                    // IDENTIFICA O DONO DO EVENTO
+                    if(item.UserEvent.UserId == item.Event.CreatedBy)
+                    {
+                        selectEvent.Owner = new SelectUser
+                        {
+                            Id = item.User.Id,
+                            Name = item.User.Name,
+                            Email = item.User.Email
+                        };
+
+                        continue;
+                    }
+                    
+                    
+                    selectEvent.Participants.Add(new SelectUser
+                    {
+                        Id = item.User.Id,
+                        Name = item.User.Name,
+                        Email = item.User.Email
+                    });
+                }
+
+                return dictionary.Values.ToList();
                             
             }
             catch (Exception ex)

@@ -13,6 +13,11 @@ namespace Eventy.Service.Host
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
+
+            var appSettings = services.RegisterAppSettings(Configuration);
+
+            services.RegisterAuthentication(appSettings.JwtSecretKey);  
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Eventy Service", Description = "Service for Eventy - Event manager.", Version = "v1" });
@@ -40,8 +45,6 @@ namespace Eventy.Service.Host
                 });
             });
 
-            var appSettings = services.RegisterAppSettings(Configuration);
-
             services.RegisterDataLayerDependencies(appSettings, Configuration);
             services.RegisterDomainDependencies();
 
@@ -58,6 +61,7 @@ namespace Eventy.Service.Host
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

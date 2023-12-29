@@ -1,4 +1,5 @@
 using Eventy.Service.Domain.Entities;
+using Eventy.Service.Domain.Events.Models;
 
 namespace Eventy.Service.Domain.Events.Commands
 {
@@ -17,7 +18,7 @@ namespace Eventy.Service.Domain.Events.Commands
 
         public Guid Id { get; set; }
 
-        public EventEntityDomain Parse(EventEntityDomain record)
+        public EventEntityDomain Parse(SelectEvent record)
         {
              var entity = new EventEntityDomain(
                 Name,
