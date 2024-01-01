@@ -1,4 +1,7 @@
 using Eventy.Service.Domain.Authentication.Commands;
+using Eventy.Service.Domain.Response;
+using Eventy.Service.Domain.Response.Enums;
+using Eventy.Service.Domain.User.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +22,17 @@ namespace Eventy.Service.Host.Controllers.Authentication.v1
 
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Post([FromBody] AuthenticateRequest command)
+        public async Task<IActionResult> Post([FromBody] AuthenticateRequest command,
+                                                [FromServices] Response<UserDTO> response)
         {
-            var res = await _mediator.Send(command);
+            await _mediator.Send(command);
 
-            return Ok(res);
+            if(response.Status == ResponseStatus.Fail)
+            {
+                return StatusCode((int)response.StatusCode, response.Notifications);
+            }
+            
+            return Ok(response.Value);
         }
     }
 }

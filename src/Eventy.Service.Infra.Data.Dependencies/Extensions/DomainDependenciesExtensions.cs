@@ -1,7 +1,7 @@
 using Eventy.Service.Domain.Events.Commands.Handlers;
 using Eventy.Service.Domain.Events.Queries;
-using Eventy.Service.Domain.Hash;
-using Eventy.Service.Domain.Hash.Interfaces;
+using Eventy.Service.Domain.Response;
+using Eventy.Service.Domain.User.Models;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,12 +11,24 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
     {
         public static void RegisterDomainDependencies(this IServiceCollection services)
         {
-            // services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
-            services.AddScoped<EventsHandler>();
-            services.AddScoped<EventsQueryHandler>();
+            RegisterHandlers(services);
+            RegisterResponses(services);
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        }
+
+        private static void RegisterHandlers(this IServiceCollection services)
+        {
+            services.AddScoped<EventsHandler>();
+            services.AddScoped<EventsQueryHandler>();
+        }
+
+        private static void RegisterResponses(this IServiceCollection services)
+        {
+            services.AddScoped<Response>();
+            services.AddScoped(typeof(Response<>));
+            
+            services.AddScoped<Response<UserDTO>>();
         }
     }
 }

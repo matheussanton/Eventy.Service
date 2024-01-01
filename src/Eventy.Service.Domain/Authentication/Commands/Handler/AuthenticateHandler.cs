@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Eventy.Service.Domain.Hash;
-using Eventy.Service.Domain.Hash.Interfaces;
+using Eventy.Service.Domain.Response;
+using Eventy.Service.Domain.Response.Enums;
 using Eventy.Service.Domain.Settings;
 using Eventy.Service.Domain.User.Interfaces;
 using Eventy.Service.Domain.User.Models;
@@ -11,31 +13,34 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Eventy.Service.Domain.Authentication.Commands.Handler
 {
-    public class AuthenticateHandler : IRequestHandler<AuthenticateRequest, UserDTO?>
+    public class AuthenticateHandler : IRequestHandler<AuthenticateRequest>
     {
         private readonly IUserRepository _userRepository;
-        // private readonly IPasswordHasher _passwordHasher;
         private readonly AppSettings _appSettings;
+        private readonly Response<UserDTO> _response;
 
         public AuthenticateHandler(
             IUserRepository userRepository,
-            // IPasswordHasher passwordHasher,
-            AppSettings appSettings
+            AppSettings appSettings,
+            Response<UserDTO> response
         )
         {
             _userRepository = userRepository;
-            // _passwordHasher = passwordHasher;
             _appSettings = appSettings;
+            _response = response;
         }
 
 
-        public async Task<UserDTO?> Handle(AuthenticateRequest request, CancellationToken cancellationToken)
+        public async Task Handle(AuthenticateRequest request, CancellationToken cancellationToken)
         {
             var userRecord = await _userRepository.GetByEmailAsync(request.Email);
 
-            if (userRecord == null) return null;
+            if (userRecord == null) {
+                request.AddNotification("User", "Usuário ou senha inválidos");
+                _response.Send(ResponseStatus.Fail, null, HttpStatusCode.BadRequest, request.Notifications);
+                return;
+            };
 
-            // if(_passwordHasher.Verify(request.Password, userRecord.Password))
             if(PasswordHasher.Verify(request.Password, userRecord.Password))
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -53,16 +58,21 @@ namespace Eventy.Service.Domain.Authentication.Commands.Handler
                     var token = tokenHandler.CreateToken(tokenDescriptor);
                     var tokenString = String.Concat("Bearer ", tokenHandler.WriteToken(token));
                     
-                return new UserDTO
+                var userDTO =  new UserDTO
                 {
                     Email = userRecord.Email,
                     Name = userRecord.Name,
                     Token = tokenString
                 };
+
+                _response.Send(ResponseStatus.Success, userDTO, HttpStatusCode.OK);
+                return;
             }
 
-            return null;
+            request.AddNotification("User", "Usuário ou senha inválidos");
+            _response.Send(ResponseStatus.Fail, null, HttpStatusCode.BadRequest, request.Notifications);
         }
+
     }
     
 }
