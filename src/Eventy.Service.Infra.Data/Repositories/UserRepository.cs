@@ -1,8 +1,10 @@
 using Eventy.Service.Domain.Entities;
 using Eventy.Service.Domain.User.Interfaces;
+using Eventy.Service.Domain.User.Models;
 using Eventy.Service.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Eventy.Service.Infra.Data.Repositories
 {
@@ -32,11 +34,17 @@ namespace Eventy.Service.Infra.Data.Repositories
             }   
         }
 
-        public async Task<List<UserEntityDomain>> GetAllAsync()
+        public async Task<List<SelectUser>> GetAllAsync()
         {
             try
             {
-                return await _context.Users.ToListAsync();
+                var users = await _context.Users.ToListAsync();
+                return users.Select(u => new SelectUser
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email
+                }).ToList();
             }
             catch (Exception ex)
             {

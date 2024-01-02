@@ -1,4 +1,5 @@
 using Eventy.Service.Domain.Entities;
+using Eventy.Service.Domain.User.Models;
 
 namespace Eventy.Service.Domain.User.Interfaces
 {
@@ -6,6 +7,6 @@ namespace Eventy.Service.Domain.User.Interfaces
     {
         Task CreateAsync(UserEntityDomain userEntity);
         Task<UserEntityDomain?> GetByEmailAsync(string email);
-        Task<List<UserEntityDomain>> GetAllAsync();
+        Task<List<SelectUser>> GetAllAsync();
     }
 }

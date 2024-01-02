@@ -1,5 +1,7 @@
 using Eventy.Service.Domain.User.Commands;
+using Eventy.Service.Domain.User.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Eventy.Service.Host.Controllers.Users.v1
@@ -9,21 +11,33 @@ namespace Eventy.Service.Host.Controllers.Users.v1
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IUserRepository _userRepository;
 
         public UserController(
-            IMediator mediator
+            IMediator mediator,
+            IUserRepository userRepository
         )
         {
             _mediator = mediator;
+            _userRepository = userRepository;
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> PostAsync([FromBody] CreateUserCommand command)
         {
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            return Ok(users);
         }
     }
 }

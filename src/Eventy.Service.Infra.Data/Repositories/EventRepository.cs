@@ -83,6 +83,7 @@ namespace Eventy.Service.Infra.Data.Repositories
 
                 var selectEvent = new SelectEvent
                 {
+                    Id = evento.Id,
                     Name = evento.Name,
                     Description = evento.Description,
                     StartDate = evento.StartDate,
@@ -160,6 +161,7 @@ namespace Eventy.Service.Infra.Data.Repositories
                     {
                         selectEvent = new SelectEvent
                         {
+                            Id = item.Event.Id,
                             Name = item.Event.Name,
                             Description = item.Event.Description,
                             StartDate = item.Event.StartDate,
