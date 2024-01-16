@@ -1,4 +1,4 @@
-namespace Eventy.Service.Domain.Response.Enums
+namespace Eventy.Service.Domain.Responses.Enums
 {
     public enum ResponseStatus
     {

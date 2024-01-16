@@ -1,6 +1,6 @@
 using Eventy.Service.Domain.Events.Commands.Handlers;
 using Eventy.Service.Domain.Events.Queries;
-using Eventy.Service.Domain.Response;
+using Eventy.Service.Domain.Responses;
 using Eventy.Service.Domain.User.Models;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

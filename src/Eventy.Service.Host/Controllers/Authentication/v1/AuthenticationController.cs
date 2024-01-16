@@ -1,6 +1,6 @@
 using Eventy.Service.Domain.Authentication.Commands;
-using Eventy.Service.Domain.Response;
-using Eventy.Service.Domain.Response.Enums;
+using Eventy.Service.Domain.Responses;
+using Eventy.Service.Domain.Responses.Enums;
 using Eventy.Service.Domain.User.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

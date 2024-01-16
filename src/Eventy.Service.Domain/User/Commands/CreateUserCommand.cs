@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using Eventy.Service.Domain.Entities;
 using Eventy.Service.Domain.User.Enums;
+using Flunt.Notifications;
 using MediatR;
 
 namespace Eventy.Service.Domain.User.Commands
 {
-    public class CreateUserCommand : IRequest
+    public class CreateUserCommand :  Notifiable<Notification>, IRequest
 
     {
         public string Name { get; set; }

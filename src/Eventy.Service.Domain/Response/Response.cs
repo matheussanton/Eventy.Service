@@ -1,8 +1,8 @@
 using System.Net;
-using Eventy.Service.Domain.Response.Enums;
+using Eventy.Service.Domain.Responses.Enums;
 using Flunt.Notifications;
 
-namespace Eventy.Service.Domain.Response
+namespace Eventy.Service.Domain.Responses
 {
     public class Response
     {

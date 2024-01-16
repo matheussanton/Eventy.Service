@@ -1,3 +1,5 @@
+using Eventy.Service.Domain.Responses;
+using Eventy.Service.Domain.Responses.Enums;
 using Eventy.Service.Domain.User.Commands;
 using Eventy.Service.Domain.User.Interfaces;
 using MediatR;
@@ -24,11 +26,17 @@ namespace Eventy.Service.Host.Controllers.Users.v1
 
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> PostAsync([FromBody] CreateUserCommand command,        
+                                                   [FromServices] Response response)
         {
             await _mediator.Send(command);
 
-            return Ok();
+            if(response.Status == ResponseStatus.Fail)
+            {
+                return StatusCode((int)response.StatusCode, response.Notifications);
+            }
+            
+            return Ok(response.Notifications);
         }
 
         [HttpGet]
