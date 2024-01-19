@@ -7,7 +7,8 @@ using MediatR;
 namespace Eventy.Service.Domain.Events.Queries
 {
     public class EventsQueryHandler : IRequestHandler<GetEventRequest, SelectEvent?>,
-                                      IRequestHandler<GetEventsRequest, List<SelectEvent>>
+                                      IRequestHandler<GetEventsRequest, List<SelectEvent>>,
+                                      IRequestHandler<GetPendingEventsRequest, List<SelectEvent>>
     {
 
         private readonly IEventRepository _eventRepository;
@@ -27,6 +28,11 @@ namespace Eventy.Service.Domain.Events.Queries
         public async Task<List<SelectEvent>> Handle(GetEventsRequest request, CancellationToken cancellationToken)
         {
             return await _eventRepository.GetAllAsync(request.Id);
+        }
+
+        public async Task<List<SelectEvent>> Handle(GetPendingEventsRequest request, CancellationToken cancellationToken)
+        {
+           return await _eventRepository.GetAllAsync(request.Id, Enums.EStatus.PENDING);
         }
     }
 }

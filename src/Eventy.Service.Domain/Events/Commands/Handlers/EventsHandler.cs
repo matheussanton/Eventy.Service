@@ -8,7 +8,8 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
 {
     public class EventsHandler : IRequestHandler<CreateEventCommand>,
                                     IRequestHandler<UpdateEventCommand>,
-                                    IRequestHandler<DeleteEventCommand>
+                                    IRequestHandler<DeleteEventCommand>,
+                                    IRequestHandler<UpdateEventStatusCommand>
     {
         private readonly IEventRepository _eventRepository;
          private readonly Response _response;
@@ -61,6 +62,21 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
             await _eventRepository.DeleteAsync(request.Id, request.UserId);
 
             _response.Send(ResponseStatus.Success, HttpStatusCode.OK);
+        }
+
+        public async Task Handle(UpdateEventStatusCommand request, CancellationToken cancellationToken)
+        {
+           var record = await _eventRepository.GetByIdAsync(request.EventId);
+
+            if (record == null)
+            {
+                request.AddNotification("Id", "Event not found");
+                _response.Send(ResponseStatus.Fail, HttpStatusCode.BadRequest, request.Notifications);
+            }
+
+            await _eventRepository.UpdateStatusAsync(request.EventId, request.UserId, request.Status);
+
+             _response.Send(ResponseStatus.Success, HttpStatusCode.OK);
         }
     }
 }

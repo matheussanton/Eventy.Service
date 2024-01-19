@@ -1,4 +1,5 @@
 using Eventy.Service.Domain.Entities;
+using Eventy.Service.Domain.Enums;
 using Eventy.Service.Domain.Events.Interfaces;
 using Eventy.Service.Domain.Events.Models;
 using Eventy.Service.Domain.User.Models;
@@ -59,6 +60,23 @@ namespace Eventy.Service.Infra.Data.Repositories
             }
         }
 
+        public async Task UpdateStatusAsync(Guid eventId, Guid userId, EStatus status)
+        {
+             try
+            {
+                var userEvent = await _context.UserEvents
+                                      .FirstOrDefaultAsync(x => x.EventId == eventId && x.UserId == userId);
+
+                userEvent?.SetStatus(status);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR UPDATING USER EVENT STATUS");
+            }
+        }
+
         public async Task<SelectEvent?> GetByIdAsync(Guid id)
         {
             try
@@ -91,6 +109,8 @@ namespace Eventy.Service.Infra.Data.Repositories
                     Location = evento.Location,
                     GoogleMapsUrl = evento.GoogleMapsUrl,
                     IsOwner = evento.CreatedBy == evento.CreatedBy,
+                    CreatedAt = evento.CreatedAt,
+                    CreatedBy = evento.CreatedBy,
                     Participants = new List<SelectUser>()
                 };
 
@@ -125,13 +145,13 @@ namespace Eventy.Service.Infra.Data.Repositories
             }
         }
 
-        public async Task<List<SelectEvent>> GetAllAsync(Guid userId)
+        public async Task<List<SelectEvent>> GetAllAsync(Guid userId, EStatus status = EStatus.ACTIVE)
         {
             try
             {
                 // TODOS EVENTOS QUE O USUARIO PARTICIPA
                 var eventIds = _context.UserEvents
-                                .Where(ue => ue.UserId == userId)
+                                .Where(ue => ue.UserId == userId && ue.Status == status)
                                 .Select(ue => ue.EventId);
 
                 var events = _context.Events

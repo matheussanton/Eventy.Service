@@ -21,5 +21,7 @@ namespace Eventy.Service.Domain.Entities
         public Guid EventId { get; private set; }
         public EStatus Status { get; private set; }
 
+        public void SetStatus(EStatus status)=> Status = status;
+
     }
 }
