@@ -206,5 +206,25 @@ namespace Eventy.Service.Infra.Data.Repositories
                 return null;
             }
         }
+
+        public async Task DeleteAsync(Guid id, Guid userId)
+        {
+            try
+            {
+                var record = await _context.Events.FirstOrDefaultAsync(x => x.Id == id);
+                if(record == null) return;
+
+                record.SetDeleted(userId, DateTime.UtcNow.AddHours(-3));
+
+                var userEventsToRemove = _context.UserEvents.Where(x => x.EventId == id);
+                _context.UserEvents.RemoveRange(userEventsToRemove);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR DELETING EVENT");
+            }
+        }
     }
 }

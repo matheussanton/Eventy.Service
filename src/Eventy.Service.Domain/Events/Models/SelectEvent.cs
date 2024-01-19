@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Eventy.Service.Domain.Entities;
 using Eventy.Service.Domain.User.Models;
 
 namespace Eventy.Service.Domain.Events.Models
@@ -20,5 +21,20 @@ namespace Eventy.Service.Domain.Events.Models
 
         public SelectUser Owner { get; set; }
         public List<SelectUser> Participants { get; set; } = new List<SelectUser>();
+
+        public static explicit operator EventEntityDomain(SelectEvent evento){
+            return new EventEntityDomain
+            (
+                evento.Name,
+                evento.Description,
+                evento.StartDate,
+                evento.EndDate,
+                evento.Location,
+                evento.GoogleMapsUrl,
+                evento.CreatedBy,
+                evento.CreatedAt,
+                evento.Id
+            );
+        }
     }
 }

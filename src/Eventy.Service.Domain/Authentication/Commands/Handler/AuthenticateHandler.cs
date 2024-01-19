@@ -60,6 +60,7 @@ namespace Eventy.Service.Domain.Authentication.Commands.Handler
                     
                 var userDTO =  new UserDTO
                 {
+                    Id = userRecord.Id,
                     Email = userRecord.Email,
                     Name = userRecord.Name,
                     Token = tokenString

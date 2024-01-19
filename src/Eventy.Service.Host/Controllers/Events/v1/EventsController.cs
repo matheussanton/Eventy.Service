@@ -1,6 +1,8 @@
 using Eventy.Service.Domain.Events.Commands;
 using Eventy.Service.Domain.Events.Models;
 using Eventy.Service.Domain.Events.Queries.Requests;
+using Eventy.Service.Domain.Responses;
+using Eventy.Service.Domain.Responses.Enums;
 using Eventy.Service.Domain.User.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -73,6 +75,26 @@ namespace Eventy.Service.Host.Controllers.Events.v1
             var result = await _mediator.Send(request);
 
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(
+            [FromRoute] Guid id,
+            [FromServices] Response response)
+        {
+            var userIdClaim = User.GetUserId();
+            if(userIdClaim == null) return Unauthorized();
+
+            var request = new DeleteEventCommand(id, Guid.Parse(userIdClaim));
+
+            await _mediator.Send(request);
+
+            if(response.Status == ResponseStatus.Fail)
+            {
+                return StatusCode((int)response.StatusCode, response.Notifications);
+            }
+            
+            return Ok(response);
         }
     }
 }
