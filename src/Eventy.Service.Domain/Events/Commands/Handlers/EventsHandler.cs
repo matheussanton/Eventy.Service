@@ -35,7 +35,7 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
 
         public async Task Handle(UpdateEventCommand request, CancellationToken cancellationToken)
         {
-            var record = await _eventRepository.GetByIdAsync(request.Id);
+            var record = await _eventRepository.GetByIdAsync(request.Id, request.UserId);
 
             if (record == null)
             {
@@ -51,7 +51,7 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
 
         public async Task Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
-            var record = await _eventRepository.GetByIdAsync(request.Id);
+            var record = await _eventRepository.GetByIdAsync(request.Id, request.UserId);
 
             if (record == null)
             {
@@ -66,7 +66,7 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
 
         public async Task Handle(UpdateEventStatusCommand request, CancellationToken cancellationToken)
         {
-           var record = await _eventRepository.GetByIdAsync(request.EventId);
+           var record = await _eventRepository.GetByIdAsync(request.EventId, request.UserId);
 
             if (record == null)
             {

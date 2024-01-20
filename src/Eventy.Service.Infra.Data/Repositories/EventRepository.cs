@@ -77,7 +77,7 @@ namespace Eventy.Service.Infra.Data.Repositories
             }
         }
 
-        public async Task<SelectEvent?> GetByIdAsync(Guid id)
+        public async Task<SelectEvent?> GetByIdAsync(Guid id, Guid userId)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace Eventy.Service.Infra.Data.Repositories
                     EndDate = evento.EndDate,
                     Location = evento.Location,
                     GoogleMapsUrl = evento.GoogleMapsUrl,
-                    IsOwner = evento.CreatedBy == evento.CreatedBy,
+                    IsOwner = evento.CreatedBy == userId,
                     CreatedAt = evento.CreatedAt,
                     CreatedBy = evento.CreatedBy,
                     Participants = new List<SelectUser>()

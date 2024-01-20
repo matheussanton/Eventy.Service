@@ -10,7 +10,7 @@ namespace Eventy.Service.Domain.Events.Interfaces
         Task UpdateAsync(EventEntityDomain eventEntity);
         Task UpdateStatusAsync(Guid eventId, Guid userId,  EStatus status);
         Task DeleteAsync(Guid id, Guid userId);
-        Task<SelectEvent?> GetByIdAsync(Guid id);
+        Task<SelectEvent?> GetByIdAsync(Guid id, Guid userId);
         Task <List<SelectEvent>> GetAllAsync(Guid userId,  EStatus status = EStatus.ACTIVE);
     }
 }

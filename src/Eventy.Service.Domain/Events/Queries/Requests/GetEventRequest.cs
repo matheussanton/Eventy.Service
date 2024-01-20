@@ -6,6 +6,10 @@ namespace Eventy.Service.Domain.Events.Queries.Requests
 {
     public class GetEventRequest : ByIdRequest, IRequest<SelectEvent?>
     {
-        public GetEventRequest(Guid id) : base(id){}
+        public GetEventRequest(Guid id, Guid userId) : base(id){
+            UserId = userId;
+        }
+
+        public Guid UserId { get; private set; }
     }
 }

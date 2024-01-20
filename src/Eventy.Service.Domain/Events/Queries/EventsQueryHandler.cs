@@ -22,7 +22,7 @@ namespace Eventy.Service.Domain.Events.Queries
         
         public async Task<SelectEvent?> Handle(GetEventRequest request, CancellationToken cancellationToken)
         {
-            return await _eventRepository.GetByIdAsync(request.Id);
+            return await _eventRepository.GetByIdAsync(request.Id, request.UserId);
         }
 
         public async Task<List<SelectEvent>> Handle(GetEventsRequest request, CancellationToken cancellationToken)

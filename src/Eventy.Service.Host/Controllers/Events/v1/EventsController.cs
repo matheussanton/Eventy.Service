@@ -58,7 +58,10 @@ namespace Eventy.Service.Host.Controllers.Events.v1
         public async Task<IActionResult> GetAsync(
             [FromRoute] Guid id)
         {
-            var request = new GetEventRequest(id);
+            var userId = User.GetUserId();
+            if(userId == null) return Unauthorized();
+            
+            var request = new GetEventRequest(id, userId.ToGuid());
 
             var result = await _mediator.Send(request);
 
