@@ -11,7 +11,7 @@ namespace Eventy.Service.Domain.Events.Queries
                                       IRequestHandler<GetPendingEventsRequest, List<SelectEvent>>
     {
 
-        private readonly IEventRepository _eventRepository;
+        private readonly IEventRepository _eventRepository; 
 
         public EventsQueryHandler(
             IEventRepository eventRepository
