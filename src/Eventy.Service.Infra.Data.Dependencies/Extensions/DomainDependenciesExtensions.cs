@@ -1,3 +1,5 @@
+using Eventy.Service.Domain.Emailing.Interfaces;
+using Eventy.Service.Domain.Emailing.Services;
 using Eventy.Service.Domain.Events.Commands.Handlers;
 using Eventy.Service.Domain.Events.Queries;
 using Eventy.Service.Domain.Responses;
@@ -21,6 +23,7 @@ namespace Eventy.Service.Infra.Data.Dependencies.Extensions
         {
             services.AddScoped<EventsHandler>();
             services.AddScoped<EventsQueryHandler>();
+            services.AddScoped<IEmailingService, EmailingService>();
         }
 
         private static void RegisterResponses(this IServiceCollection services)

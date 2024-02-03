@@ -8,5 +8,6 @@ namespace Eventy.Service.Domain.User.Interfaces
         Task CreateAsync(UserEntityDomain userEntity);
         Task<UserEntityDomain?> GetByEmailAsync(string email);
         Task<List<SelectUser>> GetAllAsync();
+        Task<List<SelectUser>> GetByIdAsync(List<Guid> ids);
     }
 }
