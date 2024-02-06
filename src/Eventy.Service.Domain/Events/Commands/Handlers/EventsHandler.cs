@@ -13,7 +13,8 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
     public class EventsHandler : IRequestHandler<CreateEventCommand>,
                                     IRequestHandler<UpdateEventCommand>,
                                     IRequestHandler<DeleteEventCommand>,
-                                    IRequestHandler<UpdateEventStatusCommand>
+                                    IRequestHandler<UpdateEventStatusCommand>,
+                                    IRequestHandler<UpdateUserEventStatusCommand>
     {
         private readonly IEventRepository _eventRepository;
         private readonly IUserRepository _userRepository;
@@ -91,6 +92,20 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
              _response.Send(ResponseStatus.Success, HttpStatusCode.OK);
         }
 
+        public async Task Handle(UpdateUserEventStatusCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _eventRepository.UpdateUserEventStatusAsync(request.UserId, request.EventId, request.Status);
+
+                _response.Send(ResponseStatus.Success, HttpStatusCode.OK);   
+            }
+            catch (Exception)
+            {
+                request.AddNotification("Id", "Error updating user event status");
+                _response.Send(ResponseStatus.Fail, HttpStatusCode.InternalServerError, request.Notifications);
+            }
+        }
 
         private async Task SendInvitationEmail(BaseEventCommand request, EventEntityDomain? eventEntity)
         {
@@ -106,54 +121,29 @@ namespace Eventy.Service.Domain.Events.Commands.Handlers
             List<SelectUser> recipients = participants?.Where(p => request.Participants.Contains(p.Id))?.ToList()!;
 
 
+            string linkBase = "http://localhost:3000/events/accept/?eventId=[EVENT_ID]&userId=[USER_ID]";
             foreach (var recipient in recipients)
             {
-               string body = $@"
-                <!DOCTYPE html>
-                <html lang='en'>
-                <head>
-                    <meta charset='UTF-8'>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    <style>
-                        body {{
-                            font-family: 'Arial', sans-serif;
-                            background-color: #f4f4f4;
-                        }}
-                        .container {{
-                            max-width: 600px;
-                            background-color: #fff;
-                            border-radius: 10px;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        }}
-                        h1 {{
-                            color: #333;
-                        }}
-                        p {{
-                            color: #666;
-                        }}
-                        .button {{
-                            display: inline-block;
-                            padding: 5px 20px 10px 20px;
-                            background-color: #007bff;
-                            color: #fff;
-                            text-decoration: none;
-                            border-radius: 5px;
-                        }}
-                    </style>
-                </head>
-                <body>
-                    <div class='container'>
-                        <h1>Olá, {recipient.Name}!</h1>
-                        <p>{sender.Name} convidou você para o evento {eventEntity.Name}
-                        que começará em {eventEntity.StartDate:dd/MM/yyyy} às {eventEntity.StartDate:HH:mm}
-                        no local {eventEntity.Location}.</p>
-                        <p>Confirme sua presença clicando no botão abaixo:</p>
-                        <a class='button' href='SEU_LINK_DE_CONFIRMACAO'>Confirmar Presença</a>
-                    </div>
-                </body>
-                </html>
-            ";
+                var userEvent = eventEntity.UserEvents.FirstOrDefault(ue => ue.UserId == recipient.Id);
+                string link = linkBase.Replace("[EVENT_ID]", eventEntity.Id.ToString()).Replace("[USER_ID]", recipient.Id.ToString());
 
+                string body = $@"
+                    <!DOCTYPE html>
+                    <html lang=""en"">
+                    <head>
+                        <meta charset=""UTF-8"">
+                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                    </head>
+                    <body style=""font-family: ""Arial"", sans-serif; background-color: #f4f4f4;"">
+                        <div class=""container"" style=""max-width: 600px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); padding: 20px;"">
+                            <h1 style=""color: #333;"">Olá, {recipient.Name}!</h1>
+                            <p style=""color: #666;"">{sender.Name} convidou você para o evento {eventEntity.Name} que começará em {eventEntity.StartDate:dd/MM/yyyy} às {eventEntity.StartDate:HH:mm} no local {eventEntity.Location}.</p>
+                            <p style=""color: #666;"">Confirme sua presença clicando no botão abaixo:</p>
+                            <a class=""button"" href=""{link}"" target=""_blank"" style=""display: inline-block; padding: 5px 20px 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;"">Confirmar Presença</a>
+                        </div>
+                    </body>
+                    </html>
+                ";
 
                 _emailingService.Send(eventyEmail, recipient.Email, subject, body);
             }

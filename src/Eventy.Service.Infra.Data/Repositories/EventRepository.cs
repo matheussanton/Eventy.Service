@@ -62,7 +62,7 @@ namespace Eventy.Service.Infra.Data.Repositories
 
         public async Task UpdateStatusAsync(Guid eventId, Guid userId, EStatus status)
         {
-             try
+            try
             {
                 var userEvent = await _context.UserEvents
                                       .FirstOrDefaultAsync(x => x.EventId == eventId && x.UserId == userId);
@@ -244,6 +244,23 @@ namespace Eventy.Service.Infra.Data.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "ERROR DELETING EVENT");
+            }
+        }
+
+        public async Task UpdateUserEventStatusAsync(Guid userId, Guid eventId, EStatus status = EStatus.ACTIVE)
+        {
+            try
+            {
+                var userEvent = await _context.UserEvents
+                                      .FirstOrDefaultAsync(x => x.UserId == userId && x.EventId == eventId);
+
+                userEvent?.SetStatus(status);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ERROR UPDATING USER EVENT STATUS");
             }
         }
     }

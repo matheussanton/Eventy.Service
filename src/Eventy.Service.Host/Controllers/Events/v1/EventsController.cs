@@ -136,5 +136,22 @@ namespace Eventy.Service.Host.Controllers.Events.v1
             
             return Ok(response);
         }
+
+        [HttpPatch("accept")]
+        [ProducesResponseType(typeof(SelectEvent), 200)]
+        public async Task<IActionResult> GetAsync([FromBody] UpdateUserEventStatusCommand command,
+                                                  [FromServices] Response response)
+        {
+            command.SetStatus(EStatus.ACTIVE);
+
+            await _mediator.Send(command);
+
+            if(response.Status == ResponseStatus.Fail)
+            {
+                return StatusCode((int)response.StatusCode, response.Notifications);
+            }
+            
+            return Ok(response);
+        }
     }
 }
