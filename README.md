@@ -21,5 +21,7 @@ You can run this project from it's compose, the compose depends on an image for 
 
 After cloning those two repos, build each one with docker and use the docker-compose.yml here as a reference, feel free to improve or edit it.
 
+``` docker build -t eventy.service . ```
+
 ## License
 MIT
