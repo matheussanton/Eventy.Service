@@ -1,0 +1,60 @@
+version: "3.8"
+name: eventy
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  compose.eventy.db:
+    image: postgres:latest
+    container_name: compose.eventy.db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: Eventy
+    ports:
+      - 5432:5432
+    volumes:
+      - postgre_data_container:/data/db
+    networks:
+      - dev
+    restart: always
+
+  compose.eventy.service:
+    image: eventy.service:latest
+    depends_on:
+      - "compose.eventy.db"
+    ports:
+      - 5005:8080
+    container_name: compose.eventy.service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Development
+      Settings__PostgreSQLConnectionString: "Host=compose.eventy.db:5432;Username=postgres;Password=postgres;Database=Eventy;Pooling=true;"
+      Settings__DatabaseName: "Eventy"
+      Settings__ApplicationName: "Eventy.Service"
+      Settings__JwtSecretKey: "a62f2225bf70bfaccbc7f1ef2a397836717377de"
+    networks:
+      - dev
+    restart: always
+
+  compose.eventy.webapp:
+    image: eventy.webapp:latest
+    depends_on:
+      - "compose.eventy.service"
+    ports:
+      - 3000:3000
+    container_name: compose.eventy.webapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - dev
+    restart: always
+
+volumes:
+  postgre_data_container:
