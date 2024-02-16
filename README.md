@@ -1,6 +1,6 @@
 # Eventy Service
 
-This project is developed using C# and .NET 8, focusing on backend development with a WebAPI architecture. It leverages the EF for efficient data management.
+This project was developed using C# and .NET 8, focusing on backend development with a WebAPI architecture. It leverages the EF for efficient data management.
 This was built with the purpose to be a simple project that can grow in difficulty as you add more architecture concepts and components
 
 ## Technologies Used
