@@ -1,4 +1,4 @@
-# Project Title
+# Eventy Service
 
 Description of your project goes here. This project is developed using C# and .NET 8, focusing on backend development with a WebAPI architecture. It leverages the Eventy framework for efficient event management.
 
