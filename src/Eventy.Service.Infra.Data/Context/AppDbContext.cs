@@ -17,7 +17,6 @@ namespace Eventy.Service.Infra.Data.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //Connect to postgreSQL with PostgreSQLConnectionString provided on AppSettings
             optionsBuilder.UseNpgsql(Configuration.GetSection("Settings")["PostgreSQLConnectionString"]);
         }
         public DbSet<UserEntityDomain> Users { get; set; }

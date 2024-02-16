@@ -1,4 +1,6 @@
+using Eventy.Service.Infra.Data.Context;
 using Eventy.Service.Infra.Data.Dependencies.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace Eventy.Service.Host
@@ -15,6 +17,8 @@ namespace Eventy.Service.Host
             services.AddEndpointsApiExplorer();
 
             var appSettings = services.RegisterAppSettings(Configuration);
+
+            Console.WriteLine($"AppSettings.ConnString: {appSettings.PostgreSQLConnectionString}");
 
             services.RegisterAuthentication(appSettings.JwtSecretKey);  
             
@@ -70,6 +74,12 @@ namespace Eventy.Service.Host
             app.UseAuthorization();
 
             app.MapControllers();
+
+            using (var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+                context.Database.Migrate();
+            }
         }
 
 
