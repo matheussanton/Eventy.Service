@@ -19,7 +19,7 @@ This was built with the purpose to be a simple project that can grow in difficul
 ## Getting Started
 You can run this project from it's compose, the compose depends on an image for frontend, you can find it here (https://github.com/matheussanton/Eventy.WebApp)
 
-After cloning those two repos, build each one with docker and use the docker-compose.yml here as a reference, feel free to improve or edit it.
+After clonning those two repos, build each one with docker and use the docker-compose.yml here as a reference, feel free to improve or edit it.
 
 ``` docker build -t eventy.service . ```
 
